@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+# This code is based on Stefan Pochmann's FMC-Mean script
+# see here for original code: https://www.speedsolving.com/forum/threads/odd-wca-stats-stats-request-thread.26121/page-108#post-925988
+# I used many parts from it and only modified it where necessary, so credits to him
+
 import pymysql
 import sys
 
