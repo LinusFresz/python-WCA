@@ -7,7 +7,7 @@
 import pymysql
 import sys
 
-N = 5              # average/mean-of-N
+N = 25              # average/mean-of-N
 T = 1               # throw out T best/worst
 
 def average(personId):
@@ -34,6 +34,7 @@ def table(rank):
         sys.stdout=open("fmcmean.txt","w")
         print('[spoiler=Average of', N, ']')
         print('[table]')
+        print('[tr][td][td]Name[/td][td]Mean[/td][td]Solves[/td][/tr]')
         # If more than 100 people have an average, just take top 100
         for k in range(0, 100):
             i = k+1
@@ -47,11 +48,12 @@ def table(rank):
         sys.stdout=open("fmcmean.txt","w")
         print('[spoiler=Average of', N, ']')
         print('[table]')
+        print('[tr][td][td]Name[/td][td]Mean[/td][td]Solves[/td][/tr]')
         for k in range(0, len(rank)):
             i = k+1
             if round(rank[k][1][0][0],2) == round(rank[k-1][1][0][0],2):
                 i = k
-            print('[tr][td]', i, '[/td][td]', rank[k][0],'[/td][td]', rank[k][1][0][0],'[/td][td]', rank[k][1][0][2], '[/td][/tr]')
+            print('[tr][td]', i, '[/td][td]', rank[k][0],'[/td][td]', round(rank[k][1][0][0],2),'[/td][td]', rank[k][1][0][2], '[/td][/tr]')
         print('[/table]')
         print('[/spoiler]')
         sys.stdout.close()
