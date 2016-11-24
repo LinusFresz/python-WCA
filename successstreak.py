@@ -13,7 +13,11 @@ def table(rank):
         print('[tr][td][td]Name[/td][td]Streak[/td][td]Mean[/td][/tr]')
         # If more than 100 people have an average, just take top 100
         for k in range(0, 100):
-            print('[tr][td]', k+1, '[/td][td]', rank[k][0],'[/td][td]', rank[k][1],'[/td][td]', rank[k][2], '[/td][/tr]')
+            i = k+1
+            for l in range(0,k):
+                if rank[k][1] == rank[k-l][1]:
+                    i = k-l+1
+            print('[tr][td]', i, '[/td][td]', rank[k][0],'[/td][td]', rank[k][1],'[/td][td]', rank[k][2], '[/td][/tr]')
         print('[/table]')
         print('[/spoiler]')
         sys.stdout.close()
