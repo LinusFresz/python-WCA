@@ -36,7 +36,10 @@ def table(rank):
         print('[table]')
         # If more than 100 people have an average, just take top 100
         for k in range(0, 100):
-            print('[tr][td]', k+1, '[/td][td]', rank[k][0],'[/td][td]', round(rank[k][1][0][0],2),'[/td][td]', rank[k][1][0][2], '[/td][/tr]')
+            i = k+1
+            if round(rank[k][1][0][0],2) == round(rank[k-1][1][0][0],2):
+                i = k
+            print('[tr][td]', i, '[/td][td]', rank[k][0],'[/td][td]', round(rank[k][1][0][0],2),'[/td][td]', rank[k][1][0][2], '[/td][/tr]')
         print('[/table]')
         print('[/spoiler]')
         sys.stdout.close()
@@ -45,7 +48,10 @@ def table(rank):
         print('[spoiler=Average of', N, ']')
         print('[table]')
         for k in range(0, len(rank)):
-            print('[tr][td]', k+1, '[/td][td]', rank[k][0],'[/td][td]', round(rank[k][1][0][0],2),'[/td][td]', rank[k][1][0][2], '[/td][/tr]')
+            i = k+1
+            if round(rank[k][1][0][0],2) == round(rank[k-1][1][0][0],2):
+                i = k
+            print('[tr][td]', i, '[/td][td]', rank[k][0],'[/td][td]', rank[k][1][0][0],'[/td][td]', rank[k][1][0][2], '[/td][/tr]')
         print('[/table]')
         print('[/spoiler]')
         sys.stdout.close()
