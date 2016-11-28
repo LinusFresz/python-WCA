@@ -1,0 +1,106 @@
+Here are most of my SQL scripts + short description (all of which are not used in any other python-script)
+
+# Sum of all solves done by a single competitor (+ DNFs):
+SELECT  personName, Count(value1 > 0 OR NULL) + Count(value2 > 0 OR NULL) + Count(value3 > 0 OR NULL) + Count(value4 > 0 OR NULL) + Count(value5 > 0 OR NULL) AS solves, Count(value1 = -1 OR NULL) + Count(value2 = -1 OR NULL) + Count(value3 = -1 OR NULL) + Count(value4 = -1 OR NULL) + Count(value5 = -1 OR NULL) AS dnfs
+FROM Results
+GROUP BY personName
+ORDER BY solves DESC
+Limit 100
+
+
+# Comparison between solves and DNFs, ordered by highest percentage:
+1. ignoring how many attempts were done
+SELECT  personName, Count(value1 > 0 OR NULL) + Count(value2 > 0 OR NULL) + Count(value3 > 0 OR NULL) + Count(value4 > 0 OR NULL) + Count(value5 > 0 OR NULL) AS solves, Count(value1 = -1 OR NULL) + Count(value2 = -1 OR NULL) + Count(value3 = -1 OR NULL) + Count(value4 = -1 OR NULL) + Count(value5 = -1 OR NULL) AS dnfs, (Count(value1 = -1 OR NULL) + Count(value2 = -1 OR NULL) + Count(value3 = -1 OR NULL) + Count(value4 = -1 OR NULL) + Count(value5 = -1 OR NULL))/(Count(value2 > 0 OR NULL) + Count(value3 > 0 OR NULL) + Count(value4 > 0 OR NULL) + Count(value5 > 0 OR NULL)) AS percentage
+FROM Results
+GROUP BY personName
+ORDER BY percentage DESC
+Limit 100
+
+2. for everyone with more than 500 attempts
+SELECT personName, attempts, dnfs, dnfs/attempts *100 AS percentage
+FROM
+(
+SELECT personName, (Count(value1 > 0 OR value1 = -1 OR NULL) + Count(value2 > 0 OR value2 = -1 OR NULL) + Count(value3 > 0 OR value3 = -1 OR NULL) + Count(value4 > 0 OR value4 = -1 OR NULL) + Count(value5 > 0 OR value5 = -1 OR NULL)) AS attempts, Count(value1 = -1 OR NULL) + Count(value2 = -1 OR NULL) + Count(value3 = -1 OR NULL) + Count(value4 = -1 OR NULL) + Count(value5 = -1 OR NULL) AS dnfs
+FROM Results
+GROUP BY personName
+) AS x
+WHERE attempts > 500
+ORDER BY percentage DESC
+Limit 100
+
+
+# Count of sub1s in 2x2 for each attempt:
+SELECT COUNT((value1 < 100 AND value1 > 0) OR NULL) AS a1, COUNT((value2 < 100 AND value2 > 0) OR NULL) AS a2, COUNT((value3 < 100 AND value3 > 0) OR NULL) AS a3, COUNT((value4 < 100 AND value4 > 0) OR NULL) AS a4, COUNT((value5 < 100 AND value5 > 0) OR NULL) AS a5
+FROM Results
+WHERE eventId = '222'
+LIMIT 100
+
+
+# Rounds of BLD for each competitor:
+SELECT COUNT(average) AS 'Rounds of BLD', personName
+FROM Results
+WHERE eventId = '333bf'
+GROUP BY personName
+ORDER BY COUNT(average) DESC
+Limit 100
+
+
+# Count of BLD-Means for each competitor:
+SELECT COUNT(average) AS bldmeans, personName
+FROM Results
+WHERE eventId = '333bf' AND average > 0
+GROUP BY personName
+ORDER BY bldmeans DESC
+Limit 100
+
+
+# Count of BLD-rounds for each competition: (especially looking at competitons with 2 rounds of FMC)
+SELECT competitionId, COUNT(DISTINCT roundId) as rounds, formatId as attempts, eventId, countryId
+FROM Results INNER JOIN Competitions ON Results.competitionId = Competitions.id
+WHERE eventId = '333fm' AND (formatId = 'm' OR formatId = 3)
+GROUP BY competitionId
+ORDER BY rounds DESC
+Limit 100
+
+
+# Count of competitions for a certain year for German competitors:
+SELECT personName, COUNT(DISTINCT competitionID) AS companzahl
+FROM Results
+WHERE personCountryId = 'Germany' AND competitionId LIKE '%2016'
+GROUP BY personName
+ORDER BY companzahl DESC
+Limit 100
+
+
+# Average attempts per competiton in a certain year for each competitor:
+SELECT personName, companzahl, attempts/companzahl AS attemptsprocomp
+FROM
+(
+SELECT personName, COUNT(DISTINCT competitionID) AS companzahl, (Count(value1 > 0 OR value1 = -1 OR NULL) + Count(value2 > 0 OR value2 = -1 OR NULL) + Count(value3 > 0 OR value3 = -1 OR NULL) + Count(value4 > 0 OR value4 = -1 OR NULL) + Count(value5 > 0 OR value5 = -1 OR NULL)) AS attempts, Count(value1 > 0 OR NULL) + Count(value2 > 0 OR NULL) + Count(value3 > 0 OR NULL) + Count(value4 > 0 OR NULL) + Count(value5 > 0 OR NULL) AS solves
+FROM Results
+WHERE competitionId LIKE '%2016'
+GROUP BY personName
+) AS x
+ORDER BY attemptsprocomp DESC
+Limit 100
+
+
+# Attempts per competition for a certain competitor:
+SELECT personName, competitionId, attempts
+FROM
+(
+SELECT personName, competitionId, (Count(value1 > 0 OR value1 = -1 OR NULL) + Count(value2 > 0 OR value2 = -1 OR NULL) + Count(value3 > 0 OR value3 = -1 OR NULL) + Count(value4 > 0 OR value4 = -1 OR NULL) + Count(value5 > 0 OR value5 = -1 OR NULL)) AS attempts
+FROM Results
+GROUP BY personName, competitionId
+) AS x
+WHERE personName = 'Linus Fresz'
+ORDER BY attempts DESC
+Limit 100
+
+
+# Count of competitions per country for a competitor:
+SELECT res.personName, comp.countryId, COUNT(DISTINCT competitionId) AS compCount FROM Results AS res
+  INNER JOIN Competitions AS comp ON res.competitionId = comp.id
+WHERE res.personId = '2011FRES01'
+GROUP BY res.personName, comp.countryId
+ORDER BY compCount DESC
