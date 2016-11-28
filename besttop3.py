@@ -39,7 +39,6 @@ rows = cur.fetchall()
 
 # Adding the results of top3 of this round and sorting by lowest sum
 res = []
-sum = 0
 
 for i in range(0,len(rows)):
     sum = 0
