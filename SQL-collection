@@ -104,3 +104,12 @@ SELECT res.personName, comp.countryId, COUNT(DISTINCT competitionId) AS compCoun
 WHERE res.personId = '2011FRES01'
 GROUP BY res.personName, comp.countryId
 ORDER BY compCount DESC
+
+
+# Count of fourth places per competitor: (outcommented: would only take final rounds into account)
+SELECT res.personName, COUNT(res.pos) AS mostfourth, per.id
+FROM Results AS res INNER JOIN Persons as per ON res.personId = per.id 
+WHERE res.pos = 4 and per.countryId = 'Germany' #and res.roundId = 'f'
+GROUP BY personName
+ORDER BY mostfourth DESC
+LIMIT 100
