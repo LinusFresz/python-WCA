@@ -6,21 +6,22 @@ from itertools import groupby
 
 # Print table
 def table(rank):
-    if len(rank) >= 100:
-        sys.stdout=open("fmcstreak.txt","w")
-        print('[spoiler=Longest streaks]')
-        print('[table]')
-        print('[tr][td][td]Name[/td][td]Streak[/td][td]Mean[/td][/tr]')
-        # If more than 100 people have an average, just take top 100
-        for k in range(0, 100):
-            i = k+1
-            for l in range(0,k):
-                if rank[k][1] == rank[k-l][1]:
-                    i = k-l+1
-            print('[tr][td]', i, '[/td][td]', rank[k][0],'[/td][td]', rank[k][1],'[/td][td]', rank[k][2], '[/td][/tr]')
-        print('[/table]')
-        print('[/spoiler]')
-        sys.stdout.close()
+    sys.stdout=open("fmcstreak.txt","w")
+    print('[spoiler=Longest streaks]')
+    print('[table]')
+    print('[tr][td][td]Name[/td][td]Streak[/td][td]Mean[/td][/tr]')
+    # If more than 100 people have an average, just take top 100
+    for k in range(0, len(rank)):
+        i = k+1
+        for l in range(0,k):
+            if rank[k][1] == rank[k-l][1]:
+                i = k-l+1
+        print('[tr][td]', i, '[/td][td]', rank[k][0],'[/td][td]', rank[k][1],'[/td][td]', rank[k][2], '[/td][/tr]')
+        if k > 100:
+            break
+    print('[/table]')
+    print('[/spoiler]')
+    sys.stdout.close()
 
 
 
