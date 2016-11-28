@@ -30,35 +30,22 @@ def average(personId):
 
 # Print table
 def table(rank):
-    if len(rank) >= 100:
-        sys.stdout=open("fmcmean.txt","w")
-        print('[spoiler=Average of', N, ']')
-        print('[table]')
-        print('[tr][td][td]Name[/td][td]Mean[/td][td]Solves[/td][/tr]')
-        # If more than 100 people have an average, just take top 100
-        for k in range(0, 100):
-            i = k+1
-            for l in range(0,k):
-                if round(rank[k][1][0][0],2) == round(rank[k-l][1][0][0],2):
-                    i = k-l+1
-            print('[tr][td]', i, '[/td][td]', rank[k][0],'[/td][td]', round(rank[k][1][0][0],2),'[/td][td]', rank[k][1][0][2], '[/td][/tr]')
-        print('[/table]')
-        print('[/spoiler]')
-        sys.stdout.close()
-    else:
-        sys.stdout=open("fmcmean.txt","w")
-        print('[spoiler=Average of', N, ']')
-        print('[table]')
-        print('[tr][td][td]Name[/td][td]Mean[/td][td]Solves[/td][/tr]')
-        for k in range(0, len(rank)):
-            i = k+1
-            for l in range(0,k):
-                if round(rank[k][1][0][0],2) == round(rank[k-l][1][0][0],2):
-                    i = k-l+1
-            print('[tr][td]', i, '[/td][td]', rank[k][0],'[/td][td]', round(rank[k][1][0][0],2),'[/td][td]', rank[k][1][0][2], '[/td][/tr]')
-        print('[/table]')
-        print('[/spoiler]')
-        sys.stdout.close()
+    sys.stdout=open("fmcmean.txt","w")
+    print('[spoiler=Average of', N, ']')
+    print('[table]')
+    print('[tr][td][td]Name[/td][td]Mean[/td][td]Solves[/td][/tr]')
+    # If more than 100 people have an average, just take top 100
+    for k in range(0, len(rank)):
+        i = k+1
+        for l in range(0,k):
+            if round(rank[k][1][0][0],2) == round(rank[k-l][1][0][0],2):
+                i = k-l+1
+        print('[tr][td]', i, '[/td][td]', rank[k][0],'[/td][td]', round(rank[k][1][0][0],2),'[/td][td]', rank[k][1][0][2], '[/td][/tr]')
+        if k > 100:
+            break
+    print('[/table]')
+    print('[/spoiler]')
+    sys.stdout.close()
 
 
 # Just setup and connection to my DB
