@@ -2,6 +2,9 @@
 
 Basically everything I will do with Python + SQL for databases, especially for the WCA-Database.
 
+Look at 'SQL-collection' for some cool SQL-queries you can use on your own.
+
+
 See the newest posts:
 
 Best 4. place for FMC (single and mean): https://www.speedsolving.com/forum/threads/the-fmc-thread.13599/page-198#post-1206825, database: 28.11.2016, done with best4place.py
