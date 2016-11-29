@@ -1,6 +1,6 @@
 # python
 
-Basically everything I will do with Python + SQL for databases, especially for the WCA-Database.
+A lot of cool stats for the WCA-database done by me! Mostly Python + SQL.
 
 Look at 'SQL-collection' for some cool SQL-queries you can use on your own.
 
