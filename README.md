@@ -7,6 +7,8 @@ Look at 'SQL-collection' for some cool SQL-queries you can use on your own.
 
 See the newest posts:
 
+Best fourth place in every event: https://www.speedsolving.com/forum/threads/odd-wca-stats-stats-request-thread.26121/page-228#post-1206981, database: 28.11.2016, done with besttop4.py and besttop4-average.py
+
 Best 4. place for FMC (single and mean): https://www.speedsolving.com/forum/threads/the-fmc-thread.13599/page-198#post-1206825, database: 28.11.2016, done with best4place.py
 
 Best sum of top3 in 3x3, not only finals: https://www.speedsolving.com/forum/threads/odd-wca-stats-stats-request-thread.26121/page-228#post-1206822, database: 28.11.2016, done with besttop3.py
