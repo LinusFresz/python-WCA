@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+# I know this script is quite ugly and there are way better ways to do this task
+# Anyway because I am just a beginner at programming with python I am quite happy to get a script going to fulfill this task
+
+
 import pymysql
 import sys
 
