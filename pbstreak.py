@@ -39,7 +39,7 @@ conn = pymysql.connect(host='127.0.0.1',
 
 # Query to get all results of each competitor to determine the streaks
 cur = conn.cursor(pymysql.cursors.DictCursor)
-cur.execute("SELECT res.competitionId, res.eventId, res.roundId, res.pos, res.personName, res.best, res.average, comp.year, comp.month, comp.day FROM Results AS res INNER JOIN Competitions AS comp ON res.competitionId = comp.id GROUP BY eventId,  competitionId, roundId, personName ORDER BY personName, comp.year, comp.month, comp.day")
+cur.execute("SELECT res.competitionId, res.eventId, res.roundId, res.pos, res.personName, res.personId, res.best, res.average, comp.year, comp.month, comp.day FROM Results AS res INNER JOIN Competitions AS comp ON res.competitionId = comp.id GROUP BY eventId,  competitionId, roundId, personId ORDER BY personId, comp.year, comp.month, comp.day")
 
 row = cur.fetchall()
 
@@ -48,17 +48,17 @@ row = cur.fetchall()
 counting = 1
 compe = []          # Rounds attended by each competitor
 for k in range(1,len(row)):
-    if row[k]['personName'] == row[k-1]['personName'] and k < (len(row)-1):
+    if row[k]['personId'] == row[k-1]['personId'] and k < (len(row)-1):
         counting = counting +1
-    elif row[k]['personName'] != row[k-1]['personName'] and k < (len(row)-1):
-        compe.append((row[k-1]['personName'], counting))
+    elif row[k]['personId'] != row[k-1]['personId'] and k < (len(row)-1):
+        compe.append((row[k-1]['personId'], counting, row[k-1]['personName']))
         counting = 1
-    elif row[k]['personName'] == row[k-1]['personName'] and k == (len(row)-1):
+    elif row[k]['personId'] == row[k-1]['personId'] and k == (len(row)-1):
         counting = counting + 1
-        compe.append((row[k-1]['personName'], counting))
+        compe.append((row[k-1]['personId'], counting, row[k-1]['personName']))
         counting = 1
-    elif row[k]['personName'] != row[k-1]['personName'] and k == (len(row)-1):
-        compe.append((row[k-1]['personName'], counting))
+    elif row[k]['personId'] != row[k-1]['personId'] and k == (len(row)-1):
+        compe.append((row[k-1]['personId'], counting, row[k-1]['personName']))
         counting = 1
 
 
@@ -140,105 +140,135 @@ for n in range(0,len(compe)):
             if row[k]['eventId'] == '222':
                 if row[k]['best'] < twosingle and row[k]['best'] > 0:
                     twosingle = row[k]['best']
-                elif row[k]['average'] < twoaverage and row[k]['average'] > 0:
+                else:
+                    nope = nope + 1
+                if row[k]['average'] < twoaverage and row[k]['average'] > 0:
                     twoaverage = row[k]['average']
                 else:
                     nope = nope + 1
             elif row[k]['eventId'] == '333':
                 if row[k]['best'] < rubikssingle and row[k]['best'] > 0:
                     rubikssingle = row[k]['best']
-                elif row[k]['average'] < rubiksaverage and row[k]['average'] > 0:
+                else:
+                    nope = nope + 1
+                if row[k]['average'] < rubiksaverage and row[k]['average'] > 0:
                     rubiksaverage = row[k]['average']
                 else:
                     nope = nope + 1
             elif row[k]['eventId'] == '444':
                 if row[k]['best'] < foursingle and row[k]['best'] > 0:
                     foursingle = row[k]['best']
-                elif row[k]['average'] < fouraverage and row[k]['average'] > 0:
+                else:
+                    nope = nope + 1
+                if row[k]['average'] < fouraverage and row[k]['average'] > 0:
                     fouraverage = row[k]['average']
                 else:
                     nope = nope + 1
             elif row[k]['eventId'] == '555':
                 if row[k]['best'] < fivesingle and row[k]['best'] > 0:
                     fivesingle = row[k]['best']
-                elif row[k]['average'] < fiveaverage and row[k]['average'] > 0:
+                else:
+                    nope = nope + 1
+                if row[k]['average'] < fiveaverage and row[k]['average'] > 0:
                     fiveaverage = row[k]['average']
                 else:
                     nope = nope + 1
             elif row[k]['eventId'] == '666':
                 if row[k]['best'] < sixsingle and row[k]['best'] > 0:
                     sixsingle = row[k]['best']
-                elif row[k]['average'] < sixaverage and row[k]['average'] > 0:
+                else:
+                    nope = nope + 1
+                if row[k]['average'] < sixaverage and row[k]['average'] > 0:
                     sixaverage = row[k]['average']
                 else:
                     nope = nope + 1
             elif row[k]['eventId'] == '777':
                 if row[k]['best'] < sevensingle and row[k]['best'] > 0:
                     sevensingle = row[k]['best']
-                elif row[k]['average'] < sevenaverage and row[k]['average'] > 0:
+                else:
+                    nope = nope + 1
+                if row[k]['average'] < sevenaverage and row[k]['average'] > 0:
                     sevenaverage = row[k]['average']
                 else:
                     nope = nope + 1
             elif row[k]['eventId'] == 'minx':
                 if row[k]['best'] < megasingle and row[k]['best'] > 0:
                     megasingle = row[k]['best']
-                elif row[k]['average'] < megaaverage and row[k]['average'] > 0:
+                else:
+                    nope = nope + 1
+                if row[k]['average'] < megaaverage and row[k]['average'] > 0:
                     megaaverage = row[k]['average']
                 else:
                     nope = nope + 1
             elif row[k]['eventId'] == 'pyram':
                 if row[k]['best'] < pyrasingle and row[k]['best'] > 0:
                     pyrasingle = row[k]['best']
-                elif row[k]['average'] < pyraaverage and row[k]['average'] > 0:
+                else:
+                    nope = nope + 1
+                if row[k]['average'] < pyraaverage and row[k]['average'] > 0:
                     pyraaverage = row[k]['average']
                 else:
                     nope = nope + 1
             elif row[k]['eventId'] == 'skewb':
                 if row[k]['best'] < skoobsingle and row[k]['best'] > 0:
                     skoobsingle = row[k]['best']
-                elif row[k]['average'] < skoobaverage and row[k]['average'] > 0:
+                else:
+                    nope = nope + 1
+                if row[k]['average'] < skoobaverage and row[k]['average'] > 0:
                     skoobaverage = row[k]['average']
                 else:
                     nope = nope + 1
             elif row[k]['eventId'] == '333oh':
                 if row[k]['best'] < ohsingle and row[k]['best'] > 0:
                     ohsingle = row[k]['best']
-                elif row[k]['average'] < ohaverage and row[k]['average'] > 0:
+                else:
+                    nope = nope + 1
+                if row[k]['average'] < ohaverage and row[k]['average'] > 0:
                     ohaverage = row[k]['average']
                 else:
                     nope = nope + 1
             elif row[k]['eventId'] == '333ft':
                 if row[k]['best'] < feetsingle and row[k]['best'] > 0:
                     feetsingle = row[k]['best']
-                elif row[k]['average'] < feetaverage and row[k]['average'] > 0:
+                else:
+                    nope = nope + 1
+                if row[k]['average'] < feetaverage and row[k]['average'] > 0:
                     feetaverage = row[k]['average']
                 else:
                     nope = nope + 1
             elif row[k]['eventId'] == 'clock':
                 if row[k]['best'] < clocksingle and row[k]['best'] > 0:
                     clocksingle = row[k]['best']
-                elif row[k]['average'] < clockaverage and row[k]['average'] > 0:
+                else:
+                    nope = nope + 1
+                if row[k]['average'] < clockaverage and row[k]['average'] > 0:
                     clockaverage = row[k]['average']
                 else:
                     nope = nope + 1
             elif row[k]['eventId'] == 'sq1':
                 if row[k]['best'] <= sqsingle and row[k]['best'] > 0:
                     sqsingle = row[k]['best']
-                elif row[k]['average'] <= sqaverage and row[k]['average'] > 0:
+                else:
+                    nope = nope + 1
+                if row[k]['average'] <= sqaverage and row[k]['average'] > 0:
                     sqaverage = row[k]['average']
                 else:
                     nope = nope + 1
             elif row[k]['eventId'] == '333bf':
                 if row[k]['best'] <= bldsingle and row[k]['best'] > 0:
                     bldsingle = row[k]['best']
-                elif row[k]['average'] <= bldaverage and row[k]['average'] > 0:
+                else:
+                    nope = nope + 1
+                if row[k]['average'] <= bldaverage and row[k]['average'] > 0:
                     bldaverage = row[k]['average']
                 else:
                     nope = nope + 1
             elif row[k]['eventId'] == '333fm':
                 if row[k]['best'] <= fmsingle and row[k]['best'] > 0:
                     fmsingle = row[k]['best']
-                elif row[k]['average'] <= fmaverage and row[k]['average'] > 0:
+                else:
+                    nope = nope + 1
+                if row[k]['average'] <= fmaverage and row[k]['average'] > 0:
                     fmaverage = row[k]['average']
                 else:
                     nope = nope + 1
@@ -246,23 +276,27 @@ for n in range(0,len(compe)):
                 if row[k]['best'] <= fourbld and row[k]['best'] > 0:
                     fourbld = row[k]['best']
                 else:
-                    nope = nope + 1
+                    nope = nope + 2
             elif row[k]['eventId'] == '555bf':
                 if row[k]['best'] <= fivebld and row[k]['best'] > 0:
                     fivebld = row[k]['best']
                 else:
-                    nope = nope + 1
+                    nope = nope + 2
             elif row[k]['eventId'] == 'magic':
                 if row[k]['best'] <= magicsingle and row[k]['best'] > 0:
                     magicsingle = row[k]['best']
-                elif row[k]['average'] <= magicsingle and row[k]['average'] > 0:
+                else:
+                    nope = nope + 1
+                if row[k]['average'] <= magicsingle and row[k]['average'] > 0:
                     magicsingle = row[k]['average']
                 else:
                     nope = nope + 1
             elif row[k]['eventId'] == 'mmagic':
                 if row[k]['best'] <= mmagicsingle and row[k]['best'] > 0:
                     mmagicsingle = row[k]['best']
-                elif row[k]['average'] <= mmagicsingle and row[k]['average'] > 0:
+                else:
+                    nope = nope + 1
+                if row[k]['average'] <= mmagicsingle and row[k]['average'] > 0:
                     mmagicsingle = row[k]['average']
                 else:
                     nope = nope + 1
@@ -279,11 +313,13 @@ for n in range(0,len(compe)):
                     if (cubes == multipoints and time <= multitime) or cubes > multipoints:
                         multipoints = cubes
                         multitime = time
+                    else:
+                        nope = nope + 2
                 else:
-                    nope = nope + 1
+                    nope = nope + 2
 
 
-        if nope == m: # If no PB, check if current streak > longest streak and reset
+        if nope == 2*m: # If no PB, check if current streak > longest streak and reset
             #complist.append(row[k]['competitionId']) # This competition breaks the streak, no PB set there -> will be the last competition in complist/finalcomplist
             if streak > finalstreak:
                 finalstreak = streak
@@ -294,6 +330,7 @@ for n in range(0,len(compe)):
         else:               # Count current streak and add competitions to list of current streak competitions
             streak = streak + 1
             complist.append(row[k]['competitionId'])
+
         nope = 0
 
 
@@ -305,7 +342,8 @@ for n in range(0,len(compe)):
         finalstreak = streak
         finalcomplist = complist
         ongo = 'ongoing'
-    
+
+
     # Check, if the streak started with the first attended competition
     startwith = 'No'
     if finalcomplist != []:
@@ -313,7 +351,7 @@ for n in range(0,len(compe)):
             startwith = 'Yes'
         
         # Take all interesting stuff of a competitor and put it in a list
-        finalres.append((finalstreak, compe[n][0], finalcomplist[0], finalcomplist[len(finalcomplist)-1], ongo, startwith))
+        finalres.append((finalstreak, compe[n][2], finalcomplist[0], finalcomplist[len(finalcomplist)-1], ongo, startwith))
 
 
 # Sort the finalres-list by longest streak without podium
