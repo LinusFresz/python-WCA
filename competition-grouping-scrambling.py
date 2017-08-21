@@ -5,6 +5,162 @@ import pymysql
 import random
 
 
+# Preparation Grouping
+def group_count(number, groups):
+    return round(number / groups, 0)
+
+
+# Grouping for all events with given number of groups
+def grouping(row, groups, column):
+    event_count = 0
+    for k in row:
+        if k[column] == "1":
+            event_count += 1
+
+    res = group_count(event_count, groups)  # Average number of competitors per group
+    l = 1
+    m = 0  # Count of groups
+    counter = 0
+    for k in range(0, len(row)):
+        if row[k][column] == "1":
+            if (l - 1) % res == 0:
+                m += 1
+                if m > groups:
+                    m -= 1
+            result_string[counter] = result_string[counter] + (m,)  # Adding group number for competitors
+            l += 1
+        else:
+            result_string[counter] = result_string[counter] + ("",)  # Leaving group empty if competitor doesn't compete
+        counter += 1
+
+
+# Collects all rankings from SQL-string for choosen event
+def get_event_results(event_ranking, rows, event):
+    for k in rows:
+        if event == k[1]:
+            event_ranking.append(k)
+
+
+# Selects correct ranking for choosen event
+def rankings(event_ranking, result_string, ranking, event):
+    get_event_results(event_ranking, rows, event)
+    for k in range(0, len(result_string)):
+        true = 0
+        for l in event_ranking:
+            if result_string[k][2] == l[0]:
+                ranking[k] = ranking[k] + (l[2],)
+                true = 1
+                break
+        if not true:
+            ranking[k] = ranking[k] + (99999,)
+
+
+# Get data from cubecomp.de csv-export
+file = open('test.txt')
+all_data = []
+
+for row in file:
+    list = row.split(',')
+    list[24] = list[24].replace("\n", "")
+    all_data.append(list)
+
+row = sorted(all_data, key=lambda x: x[1])
+
+# Create new string for grouping and add name + DOB
+result_string = []
+
+for k in row:
+    result_string.append((k[1], k[2], k[3]))
+
+# Preparation Scrambling
+rowcount = 3  # first column with grouping-data
+
+
+# Selects scramblers for each group and creates grouping
+def selectscrambler(event, round_number, round_id, scrambler, first_place, last_place, groups):
+    global rowcount
+    ranking = []
+    event_ranking = []
+
+    for k in row:
+        ranking.append((k[1], k[3]))
+
+    rankings(event_ranking, result_string, ranking, event)
+    ranking = sorted(ranking, key=lambda x: x[2])
+
+    # Adds correct columnid for events AND creates grouping for first rounds
+    if round_number == 1:
+        grouping(row, groups, columnids[event])
+        new_grouping = {event: rowcount}
+        eventids.update(new_grouping)
+        rowcount += 1
+
+    # Actual grouping happens here
+    for n in range(1, groups + 1):
+        scramblerlist.append([round_id, n])
+        for l in range(0, len(scramblerlist)):
+            if scramblerlist[l][0] == round_id:  # Only finishes after enough scramblers are in list
+                while len(scramblerlist[l]) < (scrambler + 2):
+                    rank = random.choice(range(first_place, last_place))
+
+                    if round_number == 1 or round_number == "f":
+                        not_double = checking(ranking, eventids, event, groups, rank, n, l)
+
+                        if not_double:
+                            scramblerlist[l].append(ranking[rank][0])
+                    else:
+                        not_double = checking2(ranking, eventids, event, groups, rank, n, l, first_place)
+
+                        if not_double:
+                            scramblerlist[l].append(ranking[rank][0])
+
+
+# 2 checks if scrambler can be used
+# Check 1 for 1st rounds and finals
+# Not possible if scrambler in same group, scrambler not registered for event or already scrambler in this group
+def checking(ranking, event_ids, event, groups, rank, n, l):
+    not_double = 1
+    for k in result_string:
+        if k[0] == ranking[rank][0] and groups > 1:
+            if not k[event_ids[event]]:
+                not_double = 0
+            if k[event_ids[event]] == n:
+                not_double = 0
+
+    for m in range(0, len(scramblerlist[l])):
+        if ranking[rank][0] == scramblerlist[l][m]:
+            not_double = 0
+
+    return not_double  # notdouble == 1: scrambler can be added to list, notdouble == 0: try another scrambler
+
+
+# Check 2 for 2nd/3rd rounds
+# Need to distinguish between fast and slow cubers for earlier and later rounds
+# (e.g. fast people scramble group 1, slow people group 2)
+def checking2(ranking, event_ids, event, groups, rank, n, l, lastplace):
+    not_double = 1
+    if n <= round(groups / 2, 0) and rank < round(lastplace / 2, 0):
+        for k in result_string:
+            if k[0] == ranking[rank][0] and groups > 1:
+                if not k[event_ids[event]]:
+                    not_double = 0
+        for m in range(0, len(scramblerlist[l])):
+            if ranking[rank][0] == scramblerlist[l][m]:
+                not_double = 0
+    elif n >= round(groups / 2, 0) and rank >= round(lastplace / 2, 0):
+        for k in result_string:
+            if k[0] == ranking[rank][0] and groups > 1:
+                if not k[event_ids[event]]:
+                    not_double = 0
+        for m in range(0, len(scramblerlist[l])):
+            if ranking[rank][0] == scramblerlist[l][m]:
+                not_double = 0
+    else:
+        not_double = 0
+
+    return not_double
+
+
 # Create scrambling and Grouping for this years German Nationals 2017
 # selectscrambler(event, roundnumber, eventid, scrambler, firstscrambler, lastscrambler, groups)
 selectscrambler("333fm", 1, "Fewest Moves", 0, 0, 20, 1)
@@ -49,162 +205,6 @@ selectscrambler("333oh", "f", "One-Handed Final", 4, 0, 50, 1)
 selectscrambler("222", "f", "222 Final", 3, 20, 30, 1)
 selectscrambler("444", "f", "444 Final", 3, 20, 30, 1)
 
-
-### Preparation Grouping
-def groupcount(number,groups):
-    return round(number/groups, 0)
-
-# Grouping for all events with given number of groups
-def grouping(row, groups, column):
-    eventcount = 0
-    for k in row:
-        if k[column] == "1":
-            eventcount += 1
-    
-    res = groupcount(eventcount, groups)    # Average number of competitors per group
-    l = 1
-    m = 0           # Count of groups
-    counter = 0
-    for k in range(0, len(row)):
-        if row[k][column] == "1":
-            if (l-1) % res == 0:
-                m += 1
-                if m > groups:
-                    m -= 1
-            resultstring[counter] = resultstring[counter] + (m,)       # Adding group number for competitors
-            l += 1
-        else:
-            group = ("",)
-            resultstring[counter] = resultstring[counter] + ("",)      # Leaving group empty if competitors doesn't compete
-        counter += 1
-
-# Collects all rankings from SQL-string for choosen event
-def geteventresults(eventranking, rows, event):
-    for k in rows:
-        if event == k[1]:
-            eventranking.append(k)
-
-# Selects correct ranking for choosen event
-def rankings(eventranking, resultstring, ranking, event):
-
-    geteventresults(eventranking, rows, event)
-    for k in range(0,len(resultstring)):
-        true = 0
-        for l in eventranking:
-            if resultstring[k][2] == l[0]:
-                ranking[k] = ranking[k] + (l[2],)
-                true = 1
-                break
-        if not true:
-            ranking[k] = ranking[k] + (99999,)
-
-
-# Get data from cubecomp.de csv-export
-file = open('test.txt')
-alldata = []
-
-for row in file:
-    list = row.split(',')
-    list[24] = list[24].replace("\n", "")
-    alldata.append((list))
-
-row = sorted(alldata, key=lambda x: x[1])
-
-
-# Create new string for grouping and add name + DOB
-resultstring = []
-
-for k in row:
-    resultstring.append((k[1], k[2], k[3]))
-
-
-### Preparation Scrambling
-rowcount = 3 # first column with grouping-data
-
-# Selects scramblers for each group and creates grouping
-def selectscrambler(event, roundnumber, roundid, scrambler, firstplace, lastplace, groups):
-    global rowcount
-    ranking = []
-    eventranking = []
-
-    for k in row:
-        ranking.append((k[1], k[3]))
-    
-    rankings(eventranking, resultstring, ranking, event)
-    ranking = sorted(ranking, key = lambda x:x[2])
-    
-    # Adds correct columnid for events AND creates grouping for first rounds
-    if roundnumber == 1:
-        grouping(row, groups, columnids[event])
-        newgrouping = {event: rowcount}
-        eventids.update(newgrouping)
-        rowcount += 1
-
-    # Actual grouping happens here
-    for n in range(1,groups+1):
-        scramblerlist.append([roundid, n])
-        for l in range(0,len(scramblerlist)):
-            if scramblerlist[l][0] == roundid:      # Only finishes after enough scramblers are in list
-                while len(scramblerlist[l]) < (scrambler + 2):
-                    rank = random.choice(range(firstplace, lastplace))
-
-                    if roundnumber == 1 or roundnumber == "f":
-                        notdouble = checking(ranking, eventids, event, groups, roundnumber, rank, n, l)
-
-                        if notdouble:
-                            scramblerlist[l].append(ranking[rank][0])
-                    else:
-                        notdouble = checking2(ranking, eventids, event, groups, roundnumber, rank, n, l, firstplace, lastplace)
-
-                        if notdouble:
-                            scramblerlist[l].append(ranking[rank][0])
-
-
-# 2 checks if scrambler can be used
-# Check 1 for 1st rounds and finals
-# Not possible if scrambler in same group, scrambler not registered for event or already scrambler in this group
-def checking(ranking, eventids, event, groups, roundnumber, rank, n, l):
-    notdouble = 1
-    for k in resultstring:
-        if k[0] == ranking[rank][0] and groups > 1:
-            if not k[eventids[event]]:
-                notdouble = 0
-            if k[eventids[event]] == n:
-                notdouble = 0
-            
-    for m in range(0, len(scramblerlist[l])):
-        if ranking[rank][0] == scramblerlist[l][m]:
-            notdouble = 0
-
-    return notdouble       # notdouble == 1: scrambler can be added to list, notdouble == 0: try another scrambler
-
-
-# Check 2 for 2nd/3rd rounds
-# Need to distinguish between fast and slow cubers for earlier and later rounds (e.g. fast people scramble group 1, slow people group 2)
-def checking2(ranking, eventids, event, groups, roundnumber, rank, n, l, firstplace, lastplace):
-    notdouble = 1
-    if n <= round(groups/2, 0) and rank < round(lastplace/2, 0):
-        for k in resultstring:
-            if k[0] == ranking[rank][0] and groups > 1:
-                if not k[eventids[event]]:
-                    notdouble = 0
-        for m in range(0, len(scramblerlist[l])):
-            if ranking[rank][0] == scramblerlist[l][m]:
-                notdouble = 0
-    elif n >= round(groups/2, 0) and rank >= round(lastplace/2, 0):
-        for k in resultstring:
-            if k[0] == ranking[rank][0] and groups > 1:
-                if not k[eventids[event]]:
-                    notdouble = 0
-        for m in range(0, len(scramblerlist[l])):
-            if ranking[rank][0] == scramblerlist[l][m]:
-                notdouble = 0
-    else:
-        notdouble = 0
-
-    return notdouble
-
-
 # Connect to WCA-DB
 conn = pymysql.connect(host='db.suushiemaniac.com',
                        unix_socket='/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock',
@@ -214,25 +214,29 @@ conn = pymysql.connect(host='db.suushiemaniac.com',
                        )
 
 cur = conn.cursor()
-cur.execute("SELECT * FROM RanksAverage")
-    
+cur.execute("SELECT * "
+            "FROM RanksAverage")
+
 rows = cur.fetchall()
 
-eventids = {"333": 999, "222": 999, "444": 999, "555": 999, "666": 999, "777": 999, "333bf": 999, "333fm": 999, "333oh": 999, "333ft": 999, "minx": 999, "pyram": 999, "clock": 999, "skewb": 999, "sq1": 999, "444bf": 999, "555bf": 999, "333mbf": 999}       # eventids in scrambling-string (added in selectscrambler()
-columnids = {"333": 8, "222": 7, "444": 14, "555": 16, "666": 18, "777": 19, "333bf": 9, "333fm": 10, "333oh": 13, "333ft": 11, "minx": 21, "pyram": 22, "clock": 20, "skewb": 23, "sq1": 24, "444bf": 15, "555bf": 17, "333mbf": 12}           # columnids in grouping-string
+eventids = {"333": 999, "222": 999, "444": 999, "555": 999, "666": 999, "777": 999, "333bf": 999, "333fm": 999,
+            "333oh": 999, "333ft": 999, "minx": 999, "pyram": 999, "clock": 999, "skewb": 999, "sq1": 999, "444bf": 999,
+            "555bf": 999, "333mbf": 999}  # eventids in scrambling-string (added in selectscrambler()
+columnids = {"333": 8, "222": 7, "444": 14, "555": 16, "666": 18, "777": 19, "333bf": 9, "333fm": 10, "333oh": 13,
+             "333ft": 11, "minx": 21, "pyram": 22, "clock": 20, "skewb": 23, "sq1": 24, "444bf": 15, "555bf": 17,
+             "333mbf": 12}  # columnids in grouping-string
 
 scramblerlist = []
 
 # place for selectscrambler()
 
 # Add columns for events with < 5 scramblers
-for k in range(0,len(scramblerlist)):
+for k in range(0, len(scramblerlist)):
     while len(scramblerlist[k]) < 7:
         scramblerlist[k].append("")
 
-
-### Write grouping and scrambling in separate files
-sys.stdout=open("scrambling.csv","w")
+# Write grouping and scrambling in separate files
+sys.stdout = open("scrambling.csv", "w")
 header = "Event, Group, Scrambler 1, Scrambler 2, Scrambler 3, Scrambler 4, Scrambler 5"
 
 print(header)
@@ -242,14 +246,19 @@ for k in scramblerlist:
 
 sys.stdout.close()
 
-sys.stdout=open("grouping.csv","w")
-header = ', Name, 333, 222, 444, 555, 666, 777, 333bf, 333fm, 333oh, 333ft, megaminx, pyraminx, clock, skewb, sq1, 444bf, 555bf, 333mbf'
+sys.stdout = open("grouping.csv", "w")
+header = ', Name, 333, 222, 444, 555, 666, 777, 333bf, 333fm, 333oh, 333ft, megaminx, pyraminx, clock, skewb, sq1, ' \
+         '444bf, 555bf, 333mbf '
 
 print(header)
 l = 0
-for k in resultstring:
+for k in result_string:
     l += 1
-    print(l, ",", k[0], ",", k[eventids["333"]], ",", k[eventids["222"]], ",", k[eventids["444"]], ",", k[eventids["555"]], ",", k[eventids["666"]], ",", k[eventids["777"]], ",", k[eventids["333bf"]], ",", k[eventids["333fm"]], ",", k[eventids["333oh"]], ",", k[eventids["333ft"]], ",", k[eventids["minx"]], ",", k[eventids["pyram"]], ",", k[eventids["clock"]], ",", k[eventids["skewb"]], ",", k[eventids["sq1"]], ",", k[eventids["444bf"]], ",", k[eventids["555bf"]], ",", k[eventids["333mbf"]])
+    print(l, ",", k[0], ",", k[eventids["333"]], ",", k[eventids["222"]], ",", k[eventids["444"]], ",",
+          k[eventids["555"]], ",", k[eventids["666"]], ",", k[eventids["777"]], ",", k[eventids["333bf"]], ",",
+          k[eventids["333fm"]], ",", k[eventids["333oh"]], ",", k[eventids["333ft"]], ",", k[eventids["minx"]], ",",
+          k[eventids["pyram"]], ",", k[eventids["clock"]], ",", k[eventids["skewb"]], ",", k[eventids["sq1"]], ",",
+          k[eventids["444bf"]], ",", k[eventids["555bf"]], ",", k[eventids["333mbf"]])
     if l % 32 == 0:
         print(header)
         print(header)
