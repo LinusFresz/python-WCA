@@ -5,6 +5,51 @@ import pymysql
 import random
 
 
+# Create scrambling and Grouping for this years German Nationals 2017
+# selectscrambler(event, roundnumber, eventid, scrambler, firstscrambler, lastscrambler, groups)
+selectscrambler("333fm", 1, "Fewest Moves", 0, 0, 20, 1)
+selectscrambler("444bf", 1, "444BLD", 0, 0, 20, 1)
+selectscrambler("555bf", 1, "555BLD", 0, 0, 20, 1)
+selectscrambler("777", 1, "777 1st", 5, 0, 20, 2)
+selectscrambler("666", 1, "666 1st", 5, 0, 20, 2)
+selectscrambler("minx", 1, "Megaminx 1st", 5, 0, 25, 2)
+selectscrambler("333mbf", 1, "Multi-Blind", 0, 0, 20, 1)
+selectscrambler("777", "f", "777 Final", 4, 20, 30, 1)
+selectscrambler("666", "f", "666 Final", 4, 20, 30, 1)
+selectscrambler("minx", "f", "Megaminx Final", 4, 20, 30, 1)
+
+selectscrambler("sq1", 1, "Square-1 1st", 3, 0, 20, 2)
+selectscrambler("clock", 1, "Clock 1st", 3, 0, 15, 2)
+selectscrambler("555", 1, "555 1st", 5, 0, 30, 3)
+selectscrambler("skewb", 1, "Skewb 1st", 5, 0, 40, 3)
+selectscrambler("pyram", 1, "Pyraminx 1st", 5, 0, 40, 3)
+selectscrambler("333ft", 1, "Feet 1st", 3, 0, 20, 2)
+selectscrambler("333ft", "f", "Feet Final", 0, 0, 20, 1)
+selectscrambler("333bf", 1, "Blindfolded 1st", 3, 0, 40, 2)
+selectscrambler("skewb", 2, "Skewb 2nd 1", 4, 0, 50, 2)
+selectscrambler("pyram", 2, "Pyraminx 2nd", 4, 0, 50, 2)
+selectscrambler("333oh", 1, "One-Handed 1st", 5, 0, 50, 3)
+selectscrambler("444", 1, "444 1st", 5, 0, 40, 4)
+selectscrambler("clock", "f", "Clock Final", 4, 14, 25, 1)
+selectscrambler("sq1", "f", "Square-1 Final", 3, 20, 30, 1)
+selectscrambler("skewb", "f", "Skewb Final", 3, 20, 30, 1)
+selectscrambler("pyram", "f", "Pyraminx Final", 3, 20, 30, 1)
+selectscrambler("333oh", 2, "One-Handed 2nd", 4, 0, 50, 2)
+
+selectscrambler("555", 2, "555 2nd", 5, 0, 40, 2)
+selectscrambler("444", 2, "444 2nd", 5, 0, 45, 2)
+selectscrambler("333", 1, "333 1st", 5, 0, 70, 5)
+selectscrambler("222", 1, "222 1st", 4, 0, 60, 4)
+selectscrambler("333", 2, "333 2nd", 4, 0, 70, 4)
+selectscrambler("222", 2, "222 2nd", 4, 0, 60, 2)
+selectscrambler("555", "f", "555 Final", 4, 20, 30, 1)
+selectscrambler("333bf", "f", "Blindfolded Final", 3, 20, 40, 1)
+selectscrambler("333", 3, "333 Semi", 3, 0, 40, 1)
+selectscrambler("333oh", "f", "One-Handed Final", 4, 0, 50, 1)
+selectscrambler("222", "f", "222 Final", 3, 20, 30, 1)
+selectscrambler("444", "f", "444 Final", 3, 20, 30, 1)
+
+
 ### Preparation Grouping
 def groupcount(number,groups):
     return round(number/groups, 0)
@@ -178,51 +223,7 @@ columnids = {"333": 8, "222": 7, "444": 14, "555": 16, "666": 18, "777": 19, "33
 
 scramblerlist = []
 
-
-# Create scrambling and Grouping for this years German Nationals 2017
-# selectscrambler(event, roundnumber, eventid, scrambler, firstscrambler, lastscrambler, groups)
-selectscrambler("333fm", 1, "Fewest Moves", 0, 0, 20, 1)
-selectscrambler("444bf", 1, "444BLD", 0, 0, 20, 1)
-selectscrambler("555bf", 1, "555BLD", 0, 0, 20, 1)
-selectscrambler("777", 1, "777 1st", 5, 0, 20, 2)
-selectscrambler("666", 1, "666 1st", 5, 0, 20, 2)
-selectscrambler("minx", 1, "Megaminx 1st", 5, 0, 25, 2)
-selectscrambler("333mbf", 1, "Multi-Blind", 0, 0, 20, 1)
-selectscrambler("777", "f", "777 Final", 4, 20, 30, 1)
-selectscrambler("666", "f", "666 Final", 4, 20, 30, 1)
-selectscrambler("minx", "f", "Megaminx Final", 4, 20, 30, 1)
-
-selectscrambler("sq1", 1, "Square-1 1st", 3, 0, 20, 2)
-selectscrambler("clock", 1, "Clock 1st", 3, 0, 15, 2)
-selectscrambler("555", 1, "555 1st", 5, 0, 30, 3)
-selectscrambler("skewb", 1, "Skewb 1st", 5, 0, 40, 3)
-selectscrambler("pyram", 1, "Pyraminx 1st", 5, 0, 40, 3)
-selectscrambler("333ft", 1, "Feet 1st", 3, 0, 20, 2)
-selectscrambler("333ft", "f", "Feet Final", 0, 0, 20, 1)
-selectscrambler("333bf", 1, "Blindfolded 1st", 3, 0, 40, 2)
-selectscrambler("skewb", 2, "Skewb 2nd 1", 4, 0, 50, 2)
-selectscrambler("pyram", 2, "Pyraminx 2nd", 4, 0, 50, 2)
-selectscrambler("333oh", 1, "One-Handed 1st", 5, 0, 50, 3)
-selectscrambler("444", 1, "444 1st", 5, 0, 40, 4)
-selectscrambler("clock", "f", "Clock Final", 4, 14, 25, 1)
-selectscrambler("sq1", "f", "Square-1 Final", 3, 20, 30, 1)
-selectscrambler("skewb", "f", "Skewb Final", 3, 20, 30, 1)
-selectscrambler("pyram", "f", "Pyraminx Final", 3, 20, 30, 1)
-selectscrambler("333oh", 2, "One-Handed 2nd", 4, 0, 50, 2)
-
-selectscrambler("555", 2, "555 2nd", 5, 0, 40, 2)
-selectscrambler("444", 2, "444 2nd", 5, 0, 45, 2)
-selectscrambler("333", 1, "333 1st", 5, 0, 70, 5)
-selectscrambler("222", 1, "222 1st", 4, 0, 60, 4)
-selectscrambler("333", 2, "333 2nd", 4, 0, 70, 4)
-selectscrambler("222", 2, "222 2nd", 4, 0, 60, 2)
-selectscrambler("555", "f", "555 Final", 4, 20, 30, 1)
-selectscrambler("333bf", "f", "Blindfolded Final", 3, 20, 40, 1)
-selectscrambler("333", 3, "333 Semi", 3, 0, 40, 1)
-selectscrambler("333oh", "f", "One-Handed Final", 4, 0, 50, 1)
-selectscrambler("222", "f", "222 Final", 3, 20, 30, 1)
-selectscrambler("444", "f", "444 Final", 3, 20, 30, 1)
-
+# place for selectscrambler()
 
 # Add columns for events with < 5 scramblers
 for k in range(0,len(scramblerlist)):
