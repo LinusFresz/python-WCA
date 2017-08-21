@@ -1,2 +1,5 @@
 *.vcs
 .idea/
+
+static/config.py
+__pycache__

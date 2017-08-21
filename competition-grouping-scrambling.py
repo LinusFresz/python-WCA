@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 import sys
-import pymysql
 import random
+from db import WCA_Database
 
 
 # Preparation Grouping
@@ -205,18 +205,8 @@ selectscrambler("333oh", "f", "One-Handed Final", 4, 0, 50, 1)
 selectscrambler("222", "f", "222 Final", 3, 20, 30, 1)
 selectscrambler("444", "f", "444 Final", 3, 20, 30, 1)
 
-# Connect to WCA-DB
-conn = pymysql.connect(host='db.suushiemaniac.com',
-                       unix_socket='/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock',
-                       user='wca',
-                       passwd='db',
-                       db='wca-export'
-                       )
-
-cur = conn.cursor()
-cur.execute("SELECT * "
-            "FROM RanksAverage")
-
+cur = WCA_Database.query("SELECT * "
+                         "FROM RanksAverage")
 rows = cur.fetchall()
 
 eventids = {"333": 999, "222": 999, "444": 999, "555": 999, "666": 999, "777": 999, "333bf": 999, "333fm": 999,
@@ -264,6 +254,3 @@ for k in result_string:
         print(header)
 
 sys.stdout.close()
-
-cur.close()
-conn.close()
