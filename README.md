@@ -15,7 +15,7 @@ Create directory `static` in project root and add `config.py` with the following
 credentials = {
     'host': 'localhost',
     'db': 'local_database',
-    'user': 'johnDoe',
+    'user': 'JohnDoe',
     'passwd': 'password123',
     'port': 3306,
     'socket': '/path/to/unix/socket'
