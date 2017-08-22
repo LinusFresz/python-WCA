@@ -1,13 +1,13 @@
 # python
 
-A lot of cool stats for the WCA-database done by Linus! Mostly Python + SQL.
+A lot of cool stats for the WCA-database done by me, Linus! Mostly Python + SQL.
 
 Look at 'SQL-collection' for some cool SQL-queries you can use on your own.
 
 ## Setup
 
 In order to use most of the files, you need a database connection.
-Since Linus does not want to disclose his private connection details to you,
+Since I do not want to disclose my private connection details to you,
 you need to create a static config.
 
 Create directory `static` in project root and add `config.py` with the following dictionary contents:
