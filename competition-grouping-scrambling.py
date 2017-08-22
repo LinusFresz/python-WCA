@@ -92,7 +92,7 @@ def selectscrambler(event, round_number, round_id, scrambler, first_place, last_
     if round_number == 1:
         grouping(row, groups, columnids[event])
         new_grouping = {event: rowcount}
-        eventids.update(new_grouping)
+        event_ids.update(new_grouping)
         rowcount += 1
 
     # Actual grouping happens here
@@ -104,12 +104,12 @@ def selectscrambler(event, round_number, round_id, scrambler, first_place, last_
                     rank = random.choice(range(first_place, last_place))
 
                     if round_number == 1 or round_number == "f":
-                        not_double = checking(ranking, eventids, event, groups, rank, n, l)
+                        not_double = checking(ranking, event_ids, event, groups, rank, n, l)
 
                         if not_double:
                             scramblerlist[l].append(ranking[rank][0])
                     else:
-                        not_double = checking2(ranking, eventids, event, groups, rank, n, l, first_place)
+                        not_double = checking2(ranking, event_ids, event, groups, rank, n, l, first_place)
 
                         if not_double:
                             scramblerlist[l].append(ranking[rank][0])
@@ -161,6 +161,20 @@ def checking2(ranking, event_ids, event, groups, rank, n, l, lastplace):
     return not_double
 
 
+cur = WCA_Database.query("SELECT * "
+                         "FROM RanksAverage")
+rows = cur.fetchall()
+
+event_ids = {"333": 999, "222": 999, "444": 999, "555": 999, "666": 999, "777": 999, "333bf": 999, "333fm": 999,
+            "333oh": 999, "333ft": 999, "minx": 999, "pyram": 999, "clock": 999, "skewb": 999, "sq1": 999, "444bf": 999,
+            "555bf": 999, "333mbf": 999}  # eventids in scrambling-string (added in selectscrambler()
+columnids = {"333": 8, "222": 7, "444": 14, "555": 16, "666": 18, "777": 19, "333bf": 9, "333fm": 10, "333oh": 13,
+             "333ft": 11, "minx": 21, "pyram": 22, "clock": 20, "skewb": 23, "sq1": 24, "444bf": 15, "555bf": 17,
+             "333mbf": 12}  # columnids in grouping-string
+
+scramblerlist = []
+
+
 # Create scrambling and Grouping for this years German Nationals 2017
 # selectscrambler(event, roundnumber, eventid, scrambler, firstscrambler, lastscrambler, groups)
 selectscrambler("333fm", 1, "Fewest Moves", 0, 0, 20, 1)
@@ -196,7 +210,7 @@ selectscrambler("555", 2, "555 2nd", 5, 0, 40, 2)
 selectscrambler("444", 2, "444 2nd", 5, 0, 45, 2)
 selectscrambler("333", 1, "333 1st", 5, 0, 70, 5)
 selectscrambler("222", 1, "222 1st", 4, 0, 60, 4)
-selectscrambler("333", 2, "333 2nd", 4, 0, 70, 4)
+selectscrambler("333", 2, "333 2nd", 4, 0, 70, 2)
 selectscrambler("222", 2, "222 2nd", 4, 0, 60, 2)
 selectscrambler("555", "f", "555 Final", 4, 20, 30, 1)
 selectscrambler("333bf", "f", "Blindfolded Final", 3, 20, 40, 1)
@@ -205,20 +219,6 @@ selectscrambler("333oh", "f", "One-Handed Final", 4, 0, 50, 1)
 selectscrambler("222", "f", "222 Final", 3, 20, 30, 1)
 selectscrambler("444", "f", "444 Final", 3, 20, 30, 1)
 
-cur = WCA_Database.query("SELECT * "
-                         "FROM RanksAverage")
-rows = cur.fetchall()
-
-eventids = {"333": 999, "222": 999, "444": 999, "555": 999, "666": 999, "777": 999, "333bf": 999, "333fm": 999,
-            "333oh": 999, "333ft": 999, "minx": 999, "pyram": 999, "clock": 999, "skewb": 999, "sq1": 999, "444bf": 999,
-            "555bf": 999, "333mbf": 999}  # eventids in scrambling-string (added in selectscrambler()
-columnids = {"333": 8, "222": 7, "444": 14, "555": 16, "666": 18, "777": 19, "333bf": 9, "333fm": 10, "333oh": 13,
-             "333ft": 11, "minx": 21, "pyram": 22, "clock": 20, "skewb": 23, "sq1": 24, "444bf": 15, "555bf": 17,
-             "333mbf": 12}  # columnids in grouping-string
-
-scramblerlist = []
-
-# place for selectscrambler()
 
 # Add columns for events with < 5 scramblers
 for k in range(0, len(scramblerlist)):
@@ -244,11 +244,11 @@ print(header)
 l = 0
 for k in result_string:
     l += 1
-    print(l, ",", k[0], ",", k[eventids["333"]], ",", k[eventids["222"]], ",", k[eventids["444"]], ",",
-          k[eventids["555"]], ",", k[eventids["666"]], ",", k[eventids["777"]], ",", k[eventids["333bf"]], ",",
-          k[eventids["333fm"]], ",", k[eventids["333oh"]], ",", k[eventids["333ft"]], ",", k[eventids["minx"]], ",",
-          k[eventids["pyram"]], ",", k[eventids["clock"]], ",", k[eventids["skewb"]], ",", k[eventids["sq1"]], ",",
-          k[eventids["444bf"]], ",", k[eventids["555bf"]], ",", k[eventids["333mbf"]])
+    print(l, ",", k[0], ",", k[event_ids["333"]], ",", k[event_ids["222"]], ",", k[event_ids["444"]], ",",
+          k[event_ids["555"]], ",", k[event_ids["666"]], ",", k[event_ids["777"]], ",", k[event_ids["333bf"]], ",",
+          k[event_ids["333fm"]], ",", k[event_ids["333oh"]], ",", k[event_ids["333ft"]], ",", k[event_ids["minx"]], ",",
+          k[event_ids["pyram"]], ",", k[event_ids["clock"]], ",", k[event_ids["skewb"]], ",", k[event_ids["sq1"]], ",",
+          k[event_ids["444bf"]], ",", k[event_ids["555bf"]], ",", k[event_ids["333mbf"]])
     if l % 32 == 0:
         print(header)
         print(header)
