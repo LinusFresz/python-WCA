@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-import pymysql
 import sys
+from db import WCA_Database
 
 # Print table
 def table(rank):
@@ -23,16 +23,7 @@ def table(rank):
     sys.stdout.close()
 
 
-conn = pymysql.connect(host='127.0.0.1',
-                       unix_socket='/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock',
-                       user='root',
-                       passwd=None,
-                       db='wca')
-
-
-cur = conn.cursor(pymysql.cursors.DictCursor)
-cur.execute("SELECT best, average, pos, competitionId, eventId, roundId FROM Results WHERE (pos = 1 or pos = 2 or pos = 3) AND eventId = '333' GROUP BY competitionId, roundId, average")
-
+cur = WCA_Database.query("SELECT best, average, pos, competitionId, eventId, roundTypeId FROM Results WHERE (pos = 1 or pos = 2 or pos = 3) AND eventId = '333' GROUP BY competitionId, roundTypeId, average")
 
 rows = cur.fetchall()
 
@@ -45,7 +36,7 @@ for i in range(0,len(rows)):
     if rows[i]['pos'] == 1 and rows[i]['average'] != 0:
         for k in range(i,i+3):
             sum = sum + rows[k]['average']
-        res.append((sum, rows[i]['competitionId'], rows[i]['roundId']))
+        res.append((sum, rows[i]['competitionId'], rows[i]['roundTypeId']))
     else:
         continue
 
@@ -80,10 +71,3 @@ for i in range(0,len(give)):
     print('Best averages in round', i+1, ':', give[i])
 
 table(sorted_x)
-
-
-cur.close()
-conn.close()
-
-
-

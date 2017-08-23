@@ -1,16 +1,8 @@
 #!/usr/bin/python
 
-import pymysql
+from db import WCA_Database
 
-conn = pymysql.connect(host='127.0.0.1',
-                       unix_socket='/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock',
-                       user='root',
-                       passwd=None,
-                       db='wca')
-
-
-cur = conn.cursor(pymysql.cursors.DictCursor)
-cur.execute("SELECT eventId, personId, best FROM RanksSingle WHERE eventId = '333bf' GROUP BY personId")
+cur = WCA_Database.query("SELECT eventId, personId, best FROM RanksSingle WHERE eventId = '333bf' GROUP BY personId")
 
 bld = cur.fetchall()
 
@@ -64,12 +56,3 @@ print('5BLD without 4BLD:')
 for k in range(0,len(fibf)):
     if (all(fibf[k]['personId'] != fobf[i]['personId'] for i in range(0,len(fobf)))):
         print(fibf[k]['personId'], fibf[k]['best'])
-
-
-
-
-cur.close()
-conn.close()
-
-
-

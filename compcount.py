@@ -1,16 +1,10 @@
 #!/usr/bin/python
 
-import pymysql
+from db import WCA_Database
 
-conn = pymysql.connect(host='127.0.0.1', 
-unix_socket='/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock', 
-user='root', 
-passwd=None, 
-db='wca')
+cur = WCA_Database.query("SELECT personName, COUNT(DISTINCT competitionID) AS companzahl FROM Results WHERE competitionId LIKE '%2017' GROUP BY personName ORDER BY companzahl DESC Limit 100")
 
-cur = conn.cursor()
-cur.execute("USE wca")
-cur.execute("SELECT personName, COUNT(DISTINCT competitionID) AS companzahl FROM Results WHERE personCountryId = 'Germany' AND competitionId LIKE '%2016' GROUP BY personName ORDER BY companzahl DESC Limit 100")
-print(cur.fetchall())
-cur.close()
-conn.close()
+rows = cur.fetchall()
+
+for k in rows:
+    print(k)

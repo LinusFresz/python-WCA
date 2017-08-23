@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
-import pymysql, sys
+import sys
+from db import WCA_Database
 
 # Choose the event you want to have a single-ranking of
 getit = 'average'
@@ -26,16 +27,8 @@ def table(rank, event, place):
     sys.stdout.close()
 
 
-conn = pymysql.connect(host='127.0.0.1',
-                       unix_socket='/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock',
-                       user='root',
-                       passwd=None,
-                       db='wca')
-
-
 # Get the results of interest from the database: one query for all results of fourth places in this category, the second query for the actual ranking
-cur = conn.cursor(pymysql.cursors.DictCursor)
-cur.execute("SELECT best, average, personName, competitionId, pos FROM Results WHERE pos = 4 and eventId = (%s) and average > 0 ORDER BY average", (category))
+cur = WCA_Database.query("SELECT best, average, personName, competitionId, pos FROM Results WHERE pos = 4 AND eventId = (%s) AND average > 0 ORDER BY average", (category))
 
 rows = cur.fetchall()
 
@@ -55,9 +48,3 @@ for i in range(0,len(rows)):
 
 # Generate table with results
 table(rows, getit, ranking)
-
-cur.close()
-conn.close()
-
-
-
