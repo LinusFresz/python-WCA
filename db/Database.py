@@ -17,7 +17,7 @@ class Database:
         self.cnx.autocommit(True)
 
     def query(self, query: str, args=None) -> Cursor:
-        cursor = self.cnx.cursor()
+        cursor = self.cnx.cursor(pymysql.cursors.DictCursor)
         cursor.execute(query, args)
 
         return cursor
