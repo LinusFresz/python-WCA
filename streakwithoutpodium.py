@@ -1,8 +1,7 @@
 #!/usr/bin/python
 
-import pymysql
 import sys
-
+from db import WCA_Database
 
 # Print table
 def table(rank):
@@ -24,18 +23,8 @@ def table(rank):
     sys.stdout.close()
 
 
-
-# Connection to database
-conn = pymysql.connect(host='127.0.0.1',
-                       unix_socket='/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock',
-                       user='root',
-                       passwd=None,
-                       db='wca')
-
-
 # First query to get all results of each competitor to determine the streaks
-cur = conn.cursor(pymysql.cursors.DictCursor)
-cur.execute("SELECT res.competitionId, res.eventId, res.roundId, res.pos, res.personName, res.best, res.average, comp.year, comp.month, comp.day FROM Results AS res INNER JOIN Competitions AS comp ON res.competitionId = comp.id WHERE (roundId = '1' OR roundId = 'f' OR roundId = 'c' OR roundId = 'd') GROUP BY eventId,  competitionId, roundId, personName ORDER BY personName, comp.year, comp.month, comp.day")
+cur = WCA_Database.query("SELECT res.competitionId, res.eventId, res.roundTypeId, res.pos, res.personName, res.best, res.average, comp.year, comp.month, comp.day FROM Results AS res INNER JOIN Competitions AS comp ON res.competitionId = comp.id WHERE (roundTypeId = '1' OR roundTypeId = 'f' OR roundTypeId = 'c' OR roundTypeId = 'd') GROUP BY eventId,  competitionId, roundTypeId, personName ORDER BY personName, comp.year, comp.month, comp.day")
 
 row = cur.fetchall()
 
@@ -137,10 +126,3 @@ sorted_x = sorted(finalres, key=lambda x:x[0], reverse=True)
 
 # # Build table with results
 table(sorted_x)
-
-
-cur.close()
-conn.close()
-
-
-

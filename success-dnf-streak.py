@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
-import pymysql
 import sys
 from itertools import groupby
+from db import WCA_Database
 
 # Print table, max length: 100
 def table(rank):
@@ -23,22 +23,12 @@ def table(rank):
     sys.stdout.close()
 
 
-
-
-conn = pymysql.connect(host='127.0.0.1',
-                       unix_socket='/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock',
-                       user='root',
-                       passwd=None,
-                       db='wca')
-
-
-cur = conn.cursor(pymysql.cursors.DictCursor)
-cur.execute("SELECT eventId, personName, value1, value2, value3, value4, value5 FROM Results WHERE eventId = '444bf'")
-            
-results = {}
-res = []
+cur = WCA_Database.query("SELECT eventId, personName, value1, value2, value3, value4, value5 FROM Results WHERE eventId = '444bf'")
 
 rows = cur.fetchall()
+
+results = {}
+res = []
 
 # Get everyone's results
 for row in rows:
@@ -89,9 +79,3 @@ sorted_x = sorted(res, key=lambda x:x[1], reverse=True)
 
 # Build table with results
 table(sorted_x)
-
-cur.close()
-conn.close()
-
-
-
