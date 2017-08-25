@@ -37,7 +37,7 @@ def grouping(row, groups, column):
 # Collects all rankings from SQL-string for choosen event
 def get_event_results(event_ranking, rows, event):
     for k in rows:
-        if event == k[1]:
+        if event == k['eventid']:
             event_ranking.append(k)
 
 
@@ -47,8 +47,8 @@ def rankings(event_ranking, result_string, ranking, event):
     for k in range(0, len(result_string)):
         true = 0
         for l in event_ranking:
-            if result_string[k][2] == l[0]:
-                ranking[k] = ranking[k] + (l[2],)
+            if result_string[k][2] == l['personId']:
+                ranking[k] = ranking[k] + (l['best'],)
                 true = 1
                 break
         if not true:
